@@ -19,7 +19,7 @@ console.log("I am connected...I guess")
 
 
   function findPeople (name, callback) {
-
+    console.log('Searching...')
     knex.from('famous_people')
         .select('first_name', 'last_name','birthdate')
         .where('first_name', name)
@@ -30,8 +30,19 @@ console.log("I am connected...I guess")
 
   }
 
+  function insertPeople (FName, LName, bday) {
+    let tempArr = [{first_name: FName,
+                  last_name: LName,
+                  birthdate: bday}];
+    knex('famous_people')
+        .insert(tempArr)
+        .then()
+    knex.destroy()
+  }
+
   return {
-    findPeople: findPeople
+    findPeople: findPeople,
+    insertPeople: insertPeople
   }
 
 })()
