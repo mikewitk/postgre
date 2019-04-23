@@ -1,3 +1,6 @@
+module.exports = (function() {
+
+
 const pg = require("pg");
 const settings = require("./settings"); // settings.json
 
@@ -14,11 +17,24 @@ client.connect((err) => {
   if (err) {
     return console.error("Connection Error", err);
   }
-  client.query("SELECT $1::int AS number", ["1"], (err, result) => {
-    if (err) {
-      return console.error("error running query", err);
-    }
-    console.log(result.rows[0].number); //output: 1
-    client.end();
-  });
 });
+
+  function findPeople (name, callback) {
+    client.query(`
+      SELECT first_name, last_name, birthdate
+        FROM famous_people
+        WHERE first_name = $1`, [name], (err, res) => {
+          if (err) {
+            callback([])
+          } else {
+            callback(res.rows)
+          }
+        }
+    )
+  }
+
+  return {
+    findPeople: findPeople
+  }
+
+})()
